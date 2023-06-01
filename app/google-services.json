@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "115402261068",
+    "project_id": "techhaven-c1133",
+    "storage_bucket": "techhaven-c1133.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:115402261068:android:8218accab286665cfd6ae9",
+        "android_client_info": {
+          "package_name": "com.example.techhaven"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC85X1Ssob3X71Wn20B_4MsaeAZavq96js"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
