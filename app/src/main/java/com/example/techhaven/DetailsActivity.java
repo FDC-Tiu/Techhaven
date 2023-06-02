@@ -20,8 +20,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -149,19 +152,51 @@ public class DetailsActivity extends AppCompatActivity {
                     productDetails.put("product_price", productPrice);
                     productDetails.put("product_quantity", quantity);
                     DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-                    String newUserId = databaseRef.push().getKey();
-                    databaseRef.child("Cart").child(newUserId).setValue(productDetails)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                    databaseRef.child("Cart")
+                            .orderByChild("product_name")
+                            .equalTo(productName) //check if product name is already added and update the quantity
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
-                                public void onSuccess(Void unused) {
-                                    Log.d("TIU", "onSuccess: ");
-                                    Toast.makeText(DetailsActivity.this, "Added successfully", Toast.LENGTH_SHORT).show();
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                        // The product already exists in Firebase
+                                        for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                            String cartItemId = childSnapshot.getKey();
+                                            String previousQuantity = childSnapshot.child("product_quantity").getValue(String.class);
+
+                                            int updatedQuantity = Integer.parseInt(previousQuantity) + Integer.parseInt(quantity);
+
+                                            // Update the product_quantity in Firebase
+                                            databaseRef.child("Cart").child(cartItemId).child("product_quantity").setValue(String.valueOf(updatedQuantity));
+
+                                            Toast.makeText(DetailsActivity.this, "Product quantity updated successfully", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        // The product doesn't exist, you can proceed with adding the product to Firebase
+                                        String newUserId = databaseRef.push().getKey();
+                                        databaseRef.child("Cart").child(newUserId).setValue(productDetails)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Log.d("TIU", "onSuccess: ");
+                                                        Toast.makeText(DetailsActivity.this, "Added successfully", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                })
+                                                .addOnFailureListener(new OnFailureListener() {
+                                                    @Override
+                                                    public void onFailure(@NonNull Exception e) {
+                                                        Log.d("TIU", "onFailure: ");
+                                                    }
+                                                });
+                                    }
+
+
                                 }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
+
                                 @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("TIU", "onFailure: ");
+                                public void onCancelled(@NonNull DatabaseError error) {
+
                                 }
                             });
                     itemCountView.setText("0");
