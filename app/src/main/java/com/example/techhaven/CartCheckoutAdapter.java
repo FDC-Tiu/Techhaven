@@ -1,5 +1,7 @@
 package com.example.techhaven;
 
+import static java.lang.reflect.Array.get;
+
 import android.app.Activity;
 import android.content.Context;
 import android.media.Image;
@@ -18,6 +20,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -150,6 +155,9 @@ public class CartCheckoutAdapter extends RecyclerView.Adapter<CartCheckoutAdapte
         ImageView addBtn;
         ImageView subtractBtn;
 
+        ImageView deleteBtn;
+
+
 
         public CartViewHolder(@NonNull View v) {
             super(v);
@@ -160,6 +168,7 @@ public class CartCheckoutAdapter extends RecyclerView.Adapter<CartCheckoutAdapte
             productTotal = v.findViewById(R.id.product_total);
             addBtn = v.findViewById(R.id.add_btn);
             subtractBtn = v.findViewById(R.id.subtract_btn);
+            deleteBtn = v.findViewById(R.id.delete_btn);
 
         }
     }
