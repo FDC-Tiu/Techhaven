@@ -144,32 +144,6 @@ public class MainActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            /*String name = "John Doe";
-                            int age = 25;
-                            String email = "johndoe@example.com";
-
-                            HashMap<String, Object> userData = new HashMap<>();
-                            userData.put("name", name);
-                            userData.put("age", age);
-                            userData.put("email", email);
-                            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
-                            databaseRef.child("test").setValue(userData)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-                                                    Log.d("TIU", "onSuccess: ");
-                                                }
-                                            })
-                                            .addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    Log.d("TIU", "onFailure: ");
-
-                                                }
-                                            });
-                            Log.d("TIU", "onComplete: ");*/
-                        }
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {

@@ -2,8 +2,6 @@ package com.example.techhaven;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,7 +17,6 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
-import com.example.techhaven.ui.cart.AddToCartFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -47,6 +44,15 @@ public class DetailsActivity extends AppCompatActivity {
     private FloatingActionButton floatBtn;
     private TextView backBtn;
     private TextView backCartBtn;
+    private int productId;
+    private String imageUrl;
+    private String title;
+    private String desc;
+    private double price;
+    private int stock;
+
+    public DetailsActivity() {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +72,7 @@ public class DetailsActivity extends AppCompatActivity {
         floatBtn = findViewById(R.id.float_btn);
         backBtn = findViewById(R.id.back_btn);
         backCartBtn = findViewById(R.id.back_cart_btn);
+
 
         minusNumber.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,13 +138,13 @@ public class DetailsActivity extends AppCompatActivity {
                 String item = itemCountView.getText().toString();
                 int count = Integer.parseInt(item);
                 if (count > 0) {
-                    Toast.makeText(DetailsActivity.this, "", Toast.LENGTH_SHORT).show();
 
                     String productName = tvTitle.getText().toString();
                     String productPrice = tvPrice.getText().toString();
                     String quantity = itemCountView.getText().toString();
 
                     HashMap<String, Object> productDetails = new HashMap<>();
+                    productDetails.put("image_url", imageUrl);
                     productDetails.put("product_name", productName);
                     productDetails.put("product_price", productPrice);
                     productDetails.put("product_quantity", quantity);
@@ -160,9 +167,7 @@ public class DetailsActivity extends AppCompatActivity {
                     itemCountView.setText("0");
                     mItemCount = 0;
                 } else if (count==0) {
-                    Toast.makeText(DetailsActivity.this, "Add item", Toast.LENGTH_SHORT).show();
-
-
+                    Toast.makeText(DetailsActivity.this, "Add an item", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -185,19 +190,20 @@ public class DetailsActivity extends AppCompatActivity {
                         Log.e("Products: ", response);
                         JSONObject jsonObject = new JSONObject(response);
 
-                        Product product = new Product();
-                        product.setId(jsonObject.getInt("id"));
-                        product.setTitle(jsonObject.getString("title"));
-                        product.setPrice(jsonObject.getDouble("price"));
-                        product.setStock(jsonObject.getInt("stock"));
-                        product.setThumbnail(jsonObject.getString("thumbnail"));
-                        product.setDesc(jsonObject.getString("description"));
+                        productId = jsonObject.getInt("id");
+                        imageUrl = jsonObject.getString("thumbnail");
+                        title = jsonObject.getString("title");
+                        desc = jsonObject.getString("description");
+                        price = jsonObject.getDouble("price");
+                        stock = jsonObject.getInt("stock");
 
-                        String imageUrl = jsonObject.getString("thumbnail");
-                        String title = jsonObject.getString("title");
-                        String desc = jsonObject.getString("description");
-                        double price = jsonObject.getDouble("price");
-                        int stock = jsonObject.getInt("stock");
+                        Product product = new Product();
+                        product.setId(productId);
+                        product.setTitle(title);
+                        product.setPrice(price);
+                        product.setStock(stock);
+                        product.setThumbnail(imageUrl);
+                        product.setDesc(desc);
 
                         Picasso.get().load(imageUrl).into(imageView);
                         tvTitle.setText(title);
@@ -223,7 +229,6 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
         backCartBtn.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
