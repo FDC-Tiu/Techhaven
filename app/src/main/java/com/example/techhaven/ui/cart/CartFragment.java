@@ -1,10 +1,12 @@
 package com.example.techhaven.ui.cart;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.techhaven.CartCheckout;
 import com.example.techhaven.CartCheckoutAdapter;
+import com.example.techhaven.CheckoutActivity;
 import com.example.techhaven.R;
 import com.example.techhaven.databinding.FragmentCartBinding;
 import com.example.techhaven.databinding.FragmentCartBinding;
@@ -34,7 +37,7 @@ public class CartFragment extends Fragment {
     private FragmentCartBinding binding;
     private RecyclerView recyclerView;
     private CartCheckoutAdapter cartCheckoutAdapter;
-
+    private TextView checkoutBtn;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,8 +47,17 @@ public class CartFragment extends Fragment {
         binding = FragmentCartBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         recyclerView = root.findViewById(R.id.recycler_product_list_view);
+        checkoutBtn = root.findViewById(R.id.checkout_btn);
 
         fetchCart();
+
+        checkoutBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CheckoutActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return root;
     }

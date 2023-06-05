@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.media.Image;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -209,8 +210,6 @@ public class CartCheckoutAdapter extends RecyclerView.Adapter<CartCheckoutAdapte
         ImageView subtractBtn;
 
         ImageView deleteBtn;
-
-
 
         public CartViewHolder(@NonNull View v) {
             super(v);

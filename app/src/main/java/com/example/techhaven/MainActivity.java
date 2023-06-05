@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 import com.example.techhaven.ui.home.HomeFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -23,23 +23,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.techhaven.databinding.ActivityMainBinding;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private NavController navController;
     private BottomNavigationView navView;
     public static final int DETAIL_REQUEST_CODE = 10;
-
+    private int mSelectedTabIndex;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth=FirebaseAuth.getInstance();
 
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         navView = findViewById(R.id.nav_view);
@@ -77,26 +70,33 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-        navView.setOnItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.navigation_notifications:
-                    navController.navigate(R.id.navigation_notifications);
-                    mHeader.setVisibility(View.GONE);
-                    toolbar.setVisibility(View.GONE);
-                    break;
-                case R.id.navigation_comment:
+        navView.setOnItemSelectedListener(new BottomNavigationView.OnItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int itemId = item.getItemId();
+                mSelectedTabIndex = -1; // Reset the selectedIndex
+
+                if (itemId == R.id.navigation_comment) {
                     navController.navigate(R.id.navigation_comment);
                     mHeader.setVisibility(View.GONE);
                     toolbar.setVisibility(View.VISIBLE);
-                    break;
-                case R.id.navigation_home:
+                    mSelectedTabIndex = 0;
+                } else if (itemId == R.id.navigation_home) {
                     navController.navigate(R.id.navigation_home);
                     mHeader.setVisibility(View.VISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
-                    break;
+                    mSelectedTabIndex = 1;
+                } else if (itemId == R.id.navigation_notifications) {
+                    navController.navigate(R.id.navigation_notifications);
+                    mHeader.setVisibility(View.GONE);
+                    toolbar.setVisibility(View.GONE);
+                    mSelectedTabIndex = 2;
+                }
+
+                return true;
             }
-            return true;
         });
+
 
         mHeader.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +141,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(toolbar != null && mSelectedTabIndex == 2) {
+            toolbar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         mFirebaseAuth.signInWithEmailAndPassword("fdc.johntiu@gmail.com", "admin123")
@@ -164,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode == RESULT_OK) {
                 navController.navigate(R.id.navigation_notifications);
                 mHeader.setVisibility(View.GONE);
+                mSelectedTabIndex = 2;
             }
         }
     }
