@@ -82,14 +82,17 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_notifications:
                     navController.navigate(R.id.navigation_notifications);
                     mHeader.setVisibility(View.GONE);
+                    toolbar.setVisibility(View.GONE);
                     break;
                 case R.id.navigation_comment:
                     navController.navigate(R.id.navigation_comment);
                     mHeader.setVisibility(View.GONE);
+                    toolbar.setVisibility(View.VISIBLE);
                     break;
                 case R.id.navigation_home:
                     navController.navigate(R.id.navigation_home);
                     mHeader.setVisibility(View.VISIBLE);
+                    toolbar.setVisibility(View.VISIBLE);
                     break;
             }
             return true;

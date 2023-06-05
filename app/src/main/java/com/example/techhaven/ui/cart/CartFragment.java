@@ -69,6 +69,7 @@ public class CartFragment extends Fragment {
                             String productQuantity = (String) data.get("product_quantity");
 
                             String uniqueKey = dataSnapshot.getKey();
+                            Log.d("TIUUU", "onDataChange: " + uniqueKey);
                             CartCheckout cartCheckout = dataSnapshot.getValue(CartCheckout.class);
                             if (cartCheckout != null) {
                                 cartCheckout.setId(uniqueKey);

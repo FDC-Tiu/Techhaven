@@ -3,7 +3,9 @@ package com.example.techhaven;
 import static java.lang.reflect.Array.get;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.media.Image;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,9 +22,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.techhaven.ui.cart.CartFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -77,7 +85,7 @@ public class CartCheckoutAdapter extends RecyclerView.Adapter<CartCheckoutAdapte
                 int position = holder.getAdapterPosition();
                 int itemCount = itemCounts.get(position);
 
-                //check if itemCount is less than 99
+                // Check if itemCount is less than 99
                 if (itemCount < 99) {
                     itemCount++;
                     itemCounts.set(position, itemCount);
@@ -88,14 +96,13 @@ public class CartCheckoutAdapter extends RecyclerView.Adapter<CartCheckoutAdapte
                     holder.productQuantity.setText("0");
                     itemCounts.set(position, 0);
                 }
-
             }
         });
-        holder.subtractBtn.setOnClickListener((new View.OnClickListener() {
+
+        holder.subtractBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-
                 int itemCount = itemCounts.get(position);
 
                 if (itemCount > 0) {
@@ -104,7 +111,53 @@ public class CartCheckoutAdapter extends RecyclerView.Adapter<CartCheckoutAdapte
                     holder.productQuantity.setText(String.valueOf(itemCount));
                 }
             }
-        }));
+        });
+
+        holder.deleteBtn.setTag(cartCheckout.getId());
+        holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("TIUUU", "productId: " + (String) v.getTag());
+                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                builder.setTitle("Confirmation")
+                .setMessage("Are you sure you want to delete this item?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Remove the product from Firebase
+                        Toast.makeText(v.getContext(), "Product deleted successfully", Toast.LENGTH_SHORT).show();
+
+                        String productId = (String) v.getTag();
+                        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
+
+                        Query query = databaseRef.child("Cart")
+                                .orderByChild("product_id")
+                                .equalTo(productId);
+
+                        query.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.exists()) {
+                                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                        String cartItemId = childSnapshot.getKey();
+                                        databaseRef.child("Cart").child(cartItemId).removeValue();
+                                    }
+                                } else {
+                                    Toast.makeText(v.getContext(), "Product not found in cart", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                Toast.makeText(v.getContext(), "Error deleting product: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+            }
+        });
 
         holder.productQuantity.addTextChangedListener(new TextWatcher() {
             @Override

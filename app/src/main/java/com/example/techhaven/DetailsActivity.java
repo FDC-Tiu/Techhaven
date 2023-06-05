@@ -174,7 +174,8 @@ public class DetailsActivity extends AppCompatActivity {
                                         }
                                     } else {
                                         // The product doesn't exist, you can proceed with adding the product to Firebase
-                                        String newUserId = databaseRef.push().getKey();
+                                        String newUserId = databaseRef.child("Cart").push().getKey();
+                                        productDetails.put("product_id", newUserId);
                                         databaseRef.child("Cart").child(newUserId).setValue(productDetails)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                     @Override
