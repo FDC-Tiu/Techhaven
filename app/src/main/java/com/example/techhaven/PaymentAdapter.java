@@ -1,5 +1,6 @@
 package com.example.techhaven;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
@@ -15,10 +16,12 @@ import java.util.List;
 
 public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentViewHolder> {
 
-    private List<Product> productList;
+    private List<Payment> productList;
+    private Activity mActivity;
 
-    public PaymentAdapter(List<Product> productList) {
+    public PaymentAdapter(List<Payment> productList, Activity activity) {
         this.productList = productList;
+        this.mActivity = activity;
     }
 
     @NonNull
@@ -38,30 +41,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
 
         // Set other product details
 
-        holder.payBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {double totalPrice = 0.0;
-                StringBuilder productDetailsBuilder = new StringBuilder();
 
-                for (Product product : productList) {
-                    totalPrice += product.getPrice();
-                    productDetailsBuilder.append(product.getName()).append(" - $").append(product.getPrice()).append("\n");
-                }
-
-                String paymentDetails = "Total Price: $" + totalPrice + "\n\nProduct Details:\n" + productDetailsBuilder.toString();
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getRootView().getContext()); // Use the context from the root view
-                builder.setTitle("Payment Details");
-                builder.setMessage(paymentDetails);
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                builder.create().show();
-            }
-        });
     }
 
     @Override

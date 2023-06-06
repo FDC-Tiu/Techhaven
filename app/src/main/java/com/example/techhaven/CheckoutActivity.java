@@ -8,16 +8,24 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class CheckoutActivity extends AppCompatActivity {
 
-    private Button checkout_Btn;
-    private RecyclerView recycler_product_list_view;
-    private ConstraintLayout header_container;
+    private Button checkoutBtn;
+    private RecyclerView recyclerView;
+    private PaymentAdapter paymentAdapter;
+    private ArrayList <Payment> paymentArrayList;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+
+        recyclerView = findViewById(R.id.recyclerView);
+        paymentAdapter = new PaymentAdapter(paymentArrayList, CheckoutActivity.this);
+        recyclerView.setAdapter(paymentAdapter);
+
     }
 }

@@ -2,6 +2,7 @@ package com.example.techhaven.ui.cart;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,7 @@ public class CartFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("tiuuu", "onClick: " + new Gson().toJson(cartList));
+                //TODO pass cartList
                 Intent intent = new Intent(getActivity(), CheckoutActivity.class);
                 startActivity(intent);
             }
