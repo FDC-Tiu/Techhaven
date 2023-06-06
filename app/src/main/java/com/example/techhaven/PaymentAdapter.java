@@ -1,5 +1,7 @@
 package com.example.techhaven;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +25,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
     @Override
     public PaymentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.activity_checkout, parent, false);
+                .inflate(R.layout.payment_details, parent, false);
         return new PaymentViewHolder(itemView);
     }
 
@@ -32,15 +34,32 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
         Product product = productList.get(position);
 
         holder.productName.setText(product.getName());
-        holder.productPrice.setText((int) product.getPrice());
+        holder.productPrice.setText(String.valueOf(product.getPrice()));
 
         // Set other product details
 
         holder.payBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                // Perform the payment proceed action for the specific product
-                // For example, show a dialog or navigate to a payment screen
+            public void onClick(View view) {double totalPrice = 0.0;
+                StringBuilder productDetailsBuilder = new StringBuilder();
+
+                for (Product product : productList) {
+                    totalPrice += product.getPrice();
+                    productDetailsBuilder.append(product.getName()).append(" - $").append(product.getPrice()).append("\n");
+                }
+
+                String paymentDetails = "Total Price: $" + totalPrice + "\n\nProduct Details:\n" + productDetailsBuilder.toString();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(view.getRootView().getContext()); // Use the context from the root view
+                builder.setTitle("Payment Details");
+                builder.setMessage(paymentDetails);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
             }
         });
     }
@@ -58,7 +77,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
             super(itemView);
             productName = itemView.findViewById(R.id.product_name);
             productPrice = itemView.findViewById(R.id.product_price);
-            payBtn = itemView.findViewById(R.id.pay_btn);
+            payBtn = itemView.findViewById(R.id.product_quantity);
         }
     }
 }

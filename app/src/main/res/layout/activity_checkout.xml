@@ -5,14 +5,14 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/product_name"
+        android:id="@+id/product_names"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/product_price"
+        android:id="@+id/product_prices"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp" />

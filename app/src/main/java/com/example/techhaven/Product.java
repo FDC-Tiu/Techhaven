@@ -95,4 +95,8 @@ public class Product {
     public void setThumbnail(String thumbnail) {
         this.thumbnail = thumbnail;
     }
+
+    public int getName() {
+        return 0;
+    }
 }

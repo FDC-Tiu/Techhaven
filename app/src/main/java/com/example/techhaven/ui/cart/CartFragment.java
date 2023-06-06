@@ -38,6 +38,8 @@ public class CartFragment extends Fragment {
     private RecyclerView recyclerView;
     private CartCheckoutAdapter cartCheckoutAdapter;
     private TextView checkoutBtn;
+    private   ArrayList<CartCheckout> cartList;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +56,7 @@ public class CartFragment extends Fragment {
         checkoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("tiuuu", "onClick: " + new Gson().toJson(cartList));
                 Intent intent = new Intent(getActivity(), CheckoutActivity.class);
                 startActivity(intent);
             }
@@ -67,7 +70,7 @@ public class CartFragment extends Fragment {
         databaseRef.child("Cart").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        ArrayList<CartCheckout> cartList = new ArrayList<>();
+                        cartList = new ArrayList<>();
 
                         Gson gson = new Gson();
 
