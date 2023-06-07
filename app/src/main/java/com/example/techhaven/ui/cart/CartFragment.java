@@ -1,5 +1,7 @@
 package com.example.techhaven.ui.cart;
 
+import static java.lang.Double.parseDouble;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -60,6 +62,7 @@ public class CartFragment extends Fragment {
                 Log.d("tiuuu", "onClick: " + new Gson().toJson(cartList));
                 //TODO pass cartList
                 Intent intent = new Intent(getActivity(), CheckoutActivity.class);
+                intent.putParcelableArrayListExtra("cart_list",cartList);
                 startActivity(intent);
             }
         });

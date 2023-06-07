@@ -1,5 +1,7 @@
 package com.example.techhaven;
 
+import static java.lang.Double.*;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -16,10 +18,10 @@ import java.util.List;
 
 public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentViewHolder> {
 
-    private List<Payment> productList;
+    private List<CartCheckout> productList;
     private Activity mActivity;
 
-    public PaymentAdapter(List<Payment> productList, Activity activity) {
+    public PaymentAdapter(List<CartCheckout> productList, Activity activity) {
         this.productList = productList;
         this.mActivity = activity;
     }
@@ -34,14 +36,17 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
 
     @Override
     public void onBindViewHolder(@NonNull PaymentViewHolder holder, int position) {
-        Product product = productList.get(position);
+        CartCheckout cartCheckout = productList.get(position);
+        holder.productNames.setText(cartCheckout.getProductName());
+        holder.productPrices.setText((cartCheckout.getProductPrice()));
+        holder.productQuantity.setText(cartCheckout.getQuantity());
 
-        holder.productName.setText(product.getName());
-        holder.productPrice.setText(String.valueOf(product.getPrice()));
-
-        // Set other product details
-
-
+        int quantity = Integer.parseInt(cartCheckout.getQuantity());
+        String priceString = cartCheckout.getProductPrice().replace("₱", "").replace(",", ".");
+        double price = Double.parseDouble(priceString);
+        double total = quantity * price;
+        String totalString = String.valueOf(total);
+        holder.productTotal.setText(totalString);
     }
 
     @Override
@@ -50,14 +55,16 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
     }
 
     public class PaymentViewHolder extends RecyclerView.ViewHolder {
-        public TextView productName, productPrice;
+        public TextView productNames, productPrices, productQuantity, productTotal;
         public Button payBtn;
 
         public PaymentViewHolder(@NonNull View itemView) {
             super(itemView);
-            productName = itemView.findViewById(R.id.product_name);
-            productPrice = itemView.findViewById(R.id.product_price);
-            payBtn = itemView.findViewById(R.id.product_quantity);
+            productNames = itemView.findViewById(R.id.product_names);
+            productPrices = itemView.findViewById(R.id.product_prices);
+            productQuantity = itemView.findViewById(R.id.product_quantity);
+            productTotal = itemView.findViewById(R.id.product_total);
+
         }
     }
 }

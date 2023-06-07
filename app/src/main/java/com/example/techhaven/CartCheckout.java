@@ -1,6 +1,11 @@
 package com.example.techhaven;
 
-public class CartCheckout {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class CartCheckout implements Parcelable {
 
     private String mId;
     private String productId;
@@ -24,6 +29,28 @@ public class CartCheckout {
         this.quantity = quantity;
         this.total = total;
     }
+
+    protected CartCheckout(Parcel in) {
+        mId = in.readString();
+        productId = in.readString();
+        imageUrl = in.readString();
+        productName = in.readString();
+        productPrice = in.readString();
+        quantity = in.readString();
+        total = in.readString();
+    }
+
+    public static final Creator<CartCheckout> CREATOR = new Creator<CartCheckout>() {
+        @Override
+        public CartCheckout createFromParcel(Parcel in) {
+            return new CartCheckout(in);
+        }
+
+        @Override
+        public CartCheckout[] newArray(int size) {
+            return new CartCheckout[size];
+        }
+    };
 
     public String getId() {
         return mId;
@@ -79,5 +106,24 @@ public class CartCheckout {
 
     public void setTotal(String total) {
         this.total = total;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(mId);
+        dest.writeString(productId);
+        dest.writeString(imageUrl);
+        dest.writeString(productName);
+        dest.writeString(productPrice);
+        dest.writeString(quantity);
+        dest.writeString(total);
+    }
+
+    public void setTotalPrice(String valueOf) {
     }
 }
