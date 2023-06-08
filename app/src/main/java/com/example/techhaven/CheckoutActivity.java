@@ -13,9 +13,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.paypal.android.sdk.payments.PayPalAuthorization;
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
 
 import org.w3c.dom.Text;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class CheckoutActivity extends AppCompatActivity {
@@ -26,14 +31,15 @@ public class CheckoutActivity extends AppCompatActivity {
     private  ArrayList<CartCheckout> cartList;
     private TextView paymentBackbtn;
     private  TextView overAllPrice;
+    private Button paypalBtn;
+    private double total;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
-        double total = 0;
-
         Intent intent = getIntent();
+
         // Retrieve the ArrayList from the intent in the target activity
         if (intent != null) {
             cartList = intent.getParcelableArrayListExtra("cart_list");
@@ -44,19 +50,22 @@ public class CheckoutActivity extends AppCompatActivity {
         recyclerView.setAdapter(paymentAdapter);
         paymentBackbtn = findViewById(R.id.payment_back_btn);
         overAllPrice = findViewById(R.id.overall_price_textview);
+        paypalBtn = findViewById(R.id.pay_btn);
 
-
-
-        if(!cartList.isEmpty()) {
+        if (!cartList.isEmpty()) {
             for (int i = 0; i < cartList.size(); i++) {
-                String res = cartList.get(i).getProductPrice().replace("₱", "");
-                total += Double.parseDouble(res);
+                String productPrice = cartList.get(i).getProductPrice().replace("₱", "");
+                double productPriceToDouble = Double.parseDouble(productPrice);
+                int quantity = Integer.parseInt(cartList.get(i).getQuantity());
+                double result = productPriceToDouble * quantity;
+
+                total += result;
             }
-            overAllPrice.setText("Total P" +String.valueOf(total));
+            overAllPrice.setText("Total P" + String.valueOf(total));
         }
 
-        Log.d("TAG", "onCreate: "+cartList);
-        Log.d("TAG", "onCreate: "+total);
+        Log.d("Tiuuu", "onCreate: " + cartList);
+        Log.d("Tiuuu", "onCreate: " + total);
 
         paymentBackbtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +73,20 @@ public class CheckoutActivity extends AppCompatActivity {
                 finish();
             }
         });
+        paypalBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Perform the PayPal redirection here
+                redirectPayPal();
+            }
+        });
 
+
+    }
+    private void redirectPayPal() {
+        // Create an intent to start the PayPal activity
+        Intent intent = new Intent(getApplicationContext(), PaypalActivity.class);
+        intent.putExtra("total_price", total);
+        startActivity(intent);
     }
 }

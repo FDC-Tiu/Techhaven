@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,9 +24,11 @@ import com.example.techhaven.CartCheckout;
 import com.example.techhaven.CartCheckoutAdapter;
 import com.example.techhaven.CheckoutActivity;
 import com.example.techhaven.PaymentAdapter;
+import com.example.techhaven.PaypalActivity;
 import com.example.techhaven.R;
 import com.example.techhaven.databinding.FragmentCartBinding;
 import com.example.techhaven.databinding.FragmentCartBinding;
+import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,12 +47,7 @@ public class CartFragment extends Fragment {
     private TextView checkoutBtn;
     private   ArrayList<CartCheckout> cartList;
     private PaymentAdapter paymentAdapter;
-    public double getOverallTotalFromAdapter() {
-        if (cartCheckoutAdapter != null) {
-            return cartCheckoutAdapter.getOverallTotal();
-        }
-        return 0.0;
-    }
+    private SpinKitView spinKitView;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -61,6 +59,7 @@ public class CartFragment extends Fragment {
         View root = binding.getRoot();
         recyclerView = root.findViewById(R.id.recycler_product_list_view);
         checkoutBtn = root.findViewById(R.id.checkout_btn);
+        spinKitView = root.findViewById(R.id.spin_kit);
 
         fetchCart();
 
@@ -79,58 +78,56 @@ public class CartFragment extends Fragment {
     }
 
     private void fetchCart() {
-
+        spinKitView.setVisibility(View.VISIBLE);
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         databaseRef.child("Cart").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        cartList = new ArrayList<>();
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                cartList = new ArrayList<>();
 
-                        Gson gson = new Gson();
+                Gson gson = new Gson();
 
-                        for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                            String values = gson.toJson(dataSnapshot.getValue());
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String values = gson.toJson(dataSnapshot.getValue());
 
-                            Map<String, Object> data = gson.fromJson(values, Map.class);
-                            String imageUrl = (String) data.get("image_url");
-                            String productName = (String) data.get("product_name");
-                            String productPrice = (String) data.get("product_price");
-                            String productQuantity = (String) data.get("product_quantity");
+                    Map<String, Object> data = gson.fromJson(values, Map.class);
+                    String imageUrl = (String) data.get("image_url");
+                    String productName = (String) data.get("product_name");
+                    String productPrice = (String) data.get("product_price");
+                    String productQuantity = (String) data.get("product_quantity");
 
-                            String uniqueKey = dataSnapshot.getKey();
-                            Log.d("TIUUU", "onDataChange: " + uniqueKey);
-                            CartCheckout cartCheckout = dataSnapshot.getValue(CartCheckout.class);
-                            if (cartCheckout != null) {
-                                cartCheckout.setId(uniqueKey);
-                                cartCheckout.setImageUrl(imageUrl);
-                                cartCheckout.setProductName(productName);
-                                cartCheckout.setProductPrice(productPrice);
-                                cartCheckout.setQuantity(productQuantity);
-                            }
-
-
-                            cartList.add(cartCheckout);
-                        }
-                        if (cartList.isEmpty()) {
-                            checkoutBtn.setEnabled(false);
-                            checkoutBtn.setAlpha(0.5f);
-                        }
-                        else {
-                            checkoutBtn.setEnabled(true);
-                            checkoutBtn.setAlpha(1.0f);
-                        }
-
-                        Log.d("teeest", "onDataChange: " + new Gson().toJson(cartList));
-                        cartCheckoutAdapter = new CartCheckoutAdapter(getActivity(), cartList);
-                        recyclerView.setAdapter(cartCheckoutAdapter);
-
+                    String uniqueKey = dataSnapshot.getKey();
+                    Log.d("TIUUU", "onDataChange: " + uniqueKey);
+                    CartCheckout cartCheckout = dataSnapshot.getValue(CartCheckout.class);
+                    if (cartCheckout != null) {
+                        cartCheckout.setId(uniqueKey);
+                        cartCheckout.setImageUrl(imageUrl);
+                        cartCheckout.setProductName(productName);
+                        cartCheckout.setProductPrice(productPrice);
+                        cartCheckout.setQuantity(productQuantity);
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                    cartList.add(cartCheckout);
+                }
+                spinKitView.setVisibility(View.GONE);
+                if (cartList.isEmpty()) {
+                    checkoutBtn.setEnabled(false);
+                    checkoutBtn.setAlpha(0.5f);
+                } else {
+                    checkoutBtn.setEnabled(true);
+                    checkoutBtn.setAlpha(1.0f);
+                }
 
-                    }
-                });
+                Log.d("teeest", "onDataChange: " + new Gson().toJson(cartList));
+                cartCheckoutAdapter = new CartCheckoutAdapter(getActivity(), cartList);
+                recyclerView.setAdapter(cartCheckoutAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                spinKitView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override

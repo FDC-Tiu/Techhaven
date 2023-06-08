@@ -32,6 +32,7 @@ import com.example.techhaven.ProductAdapter;
 import com.example.techhaven.R;
 import com.example.techhaven.VolleySingleton;
 import com.example.techhaven.databinding.FragmentHomeBinding;
+import com.github.ybq.android.spinkit.SpinKitView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +51,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private String mUrl;
     private TextView mNoData;
+    private SpinKitView spinKitView;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -61,6 +63,7 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
         mNoData = root.findViewById(R.id.no_data);
         recyclerView = root.findViewById(R.id.recyclerView);
+        spinKitView = root.findViewById(R.id.spin_kit);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         getProducts("");
 
@@ -68,6 +71,7 @@ public class HomeFragment extends Fragment {
     }
 
     public void getProducts(String query) {
+        spinKitView.setVisibility(View.VISIBLE);
         final ProgressDialog progressDialog = null;
         productList = new ArrayList<>();
         if (query.equals("")){
@@ -89,6 +93,7 @@ public class HomeFragment extends Fragment {
                             mNoData.setVisibility(View.VISIBLE);
                         } else {
                             mNoData.setVisibility(View.GONE);
+                            spinKitView.setVisibility(View.GONE);
                         }
 
                         for (int i = 0; i < jsonArray.length(); i++) {
@@ -113,6 +118,7 @@ public class HomeFragment extends Fragment {
                     }
                 },
                 error -> {
+                    spinKitView.setVisibility(View.GONE);
                     error.printStackTrace();
                     Toast.makeText(getContext(), "Failed" + error, Toast.LENGTH_SHORT).show();
                 });

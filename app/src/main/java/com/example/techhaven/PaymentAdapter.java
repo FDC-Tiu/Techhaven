@@ -5,6 +5,7 @@ import static java.lang.Double.*;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.paypal.android.sdk.payments.PayPalPayment;
+import com.paypal.android.sdk.payments.PayPalService;
+import com.paypal.android.sdk.payments.PaymentActivity;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentViewHolder> {
@@ -21,9 +27,12 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
     private List<CartCheckout> productList;
     private Activity mActivity;
 
+
     public PaymentAdapter(List<CartCheckout> productList, Activity activity) {
         this.productList = productList;
         this.mActivity = activity;
+
+
     }
 
     @NonNull
@@ -64,6 +73,7 @@ public class PaymentAdapter extends RecyclerView.Adapter<PaymentAdapter.PaymentV
             productPrices = itemView.findViewById(R.id.product_prices);
             productQuantity = itemView.findViewById(R.id.product_quantity);
             productTotal = itemView.findViewById(R.id.product_total);
+
 
         }
     }
