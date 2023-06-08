@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.techhaven.CartCheckout;
 import com.example.techhaven.CartCheckoutAdapter;
 import com.example.techhaven.CheckoutActivity;
+import com.example.techhaven.PaymentAdapter;
 import com.example.techhaven.R;
 import com.example.techhaven.databinding.FragmentCartBinding;
 import com.example.techhaven.databinding.FragmentCartBinding;
@@ -42,6 +43,13 @@ public class CartFragment extends Fragment {
     private CartCheckoutAdapter cartCheckoutAdapter;
     private TextView checkoutBtn;
     private   ArrayList<CartCheckout> cartList;
+    private PaymentAdapter paymentAdapter;
+    public double getOverallTotalFromAdapter() {
+        if (cartCheckoutAdapter != null) {
+            return cartCheckoutAdapter.getOverallTotal();
+        }
+        return 0.0;
+    }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -71,6 +79,7 @@ public class CartFragment extends Fragment {
     }
 
     private void fetchCart() {
+
         DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference();
         databaseRef.child("Cart").addValueEventListener(new ValueEventListener() {
                     @Override
@@ -101,6 +110,14 @@ public class CartFragment extends Fragment {
 
 
                             cartList.add(cartCheckout);
+                        }
+                        if (cartList.isEmpty()) {
+                            checkoutBtn.setEnabled(false);
+                            checkoutBtn.setAlpha(0.5f);
+                        }
+                        else {
+                            checkoutBtn.setEnabled(true);
+                            checkoutBtn.setAlpha(1.0f);
                         }
 
                         Log.d("teeest", "onDataChange: " + new Gson().toJson(cartList));

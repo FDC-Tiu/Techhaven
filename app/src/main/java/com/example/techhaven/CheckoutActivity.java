@@ -25,23 +25,38 @@ public class CheckoutActivity extends AppCompatActivity {
     private PaymentAdapter paymentAdapter;
     private  ArrayList<CartCheckout> cartList;
     private TextView paymentBackbtn;
+    private  TextView overAllPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+        double total = 0;
 
         Intent intent = getIntent();
         // Retrieve the ArrayList from the intent in the target activity
         if (intent != null) {
             cartList = intent.getParcelableArrayListExtra("cart_list");
         }
-
         recyclerView = findViewById(R.id.recycler_checkout_view);
         payBtn = findViewById(R.id.pay_btn);
         paymentAdapter = new PaymentAdapter(cartList, CheckoutActivity.this);
         recyclerView.setAdapter(paymentAdapter);
         paymentBackbtn = findViewById(R.id.payment_back_btn);
+        overAllPrice = findViewById(R.id.overall_price_textview);
+
+
+
+        if(!cartList.isEmpty()) {
+            for (int i = 0; i < cartList.size(); i++) {
+                String res = cartList.get(i).getProductPrice().replace("₱", "");
+                total += Double.parseDouble(res);
+            }
+            overAllPrice.setText("Total P" +String.valueOf(total));
+        }
+
+        Log.d("TAG", "onCreate: "+cartList);
+        Log.d("TAG", "onCreate: "+total);
 
         paymentBackbtn.setOnClickListener(new View.OnClickListener() {
             @Override

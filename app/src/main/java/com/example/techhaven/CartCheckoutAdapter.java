@@ -199,6 +199,10 @@ public class CartCheckoutAdapter extends RecyclerView.Adapter<CartCheckoutAdapte
         return (cartCheckoutArrayList==null) ? 0 : cartCheckoutArrayList.size();
     }
 
+    public double getOverallTotal() {
+        return 0.0;
+    }
+
     public class CartViewHolder extends RecyclerView.ViewHolder {
 
         ImageView productImage;
