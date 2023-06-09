@@ -52,7 +52,8 @@
                 android:layout_height="wrap_content"
                 android:text="Total: $10.00"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/red"/>
 
         </LinearLayout>
 
@@ -61,7 +62,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Price: $10.00"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textColor="@color/red"/>
 
     </LinearLayout>
 </LinearLayout>

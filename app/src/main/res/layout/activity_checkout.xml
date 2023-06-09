@@ -55,6 +55,7 @@
             android:text="Overall Price: $0.00"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:textColor="@color/red"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
