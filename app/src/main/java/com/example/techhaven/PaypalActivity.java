@@ -74,6 +74,7 @@ public class PaypalActivity extends Activity {
                     // Payment was successful, extract relevant information
                     String paymentId = confirmation.getProofOfPayment().getPaymentId();
                     String state = confirmation.getProofOfPayment().getState();
+                    setResult(Activity.RESULT_OK);
 
                     // Process the payment details as needed
                     mPaypalResult.setText("Payment successful. Payment ID: " + paymentId + ", State: " + state);

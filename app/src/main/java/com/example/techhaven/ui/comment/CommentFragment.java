@@ -48,8 +48,10 @@ public class CommentFragment extends Fragment {
     private Button shopeeBtn;
     private Button lazadaBtn;
     private WebView webView;
+    private Button upBtn;
 
     private void loadWebsite(String url) {
+        webView.setVisibility(View.VISIBLE);
         webView.loadUrl(url);
     }
 
@@ -61,6 +63,7 @@ public class CommentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadWebsite("www.shopee.com");
+                upBtn.setVisibility(View.VISIBLE);
             }
         });
 
@@ -68,6 +71,14 @@ public class CommentFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 loadWebsite("www.lazada.com");
+                upBtn.setVisibility(View.VISIBLE);
+            }
+        });
+        upBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webView.setVisibility(View.GONE);
+                upBtn.setVisibility(View.GONE);
             }
         });
     }
@@ -92,6 +103,7 @@ public class CommentFragment extends Fragment {
         commentList = new ArrayList<>();
         shopeeBtn = root.findViewById(R.id.shopee_btn);
         lazadaBtn = root.findViewById(R.id.lazada_btn);
+        upBtn = root.findViewById(R.id.up_btn);
         webView = root.findViewById(R.id.webview_container);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);

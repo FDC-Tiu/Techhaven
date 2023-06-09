@@ -15,23 +15,21 @@
                 <TextView
                     android:id="@+id/checkout_btn"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:alpha="0.5"
-                    android:background="@color/green"
-                    android:enabled="false"
-                    android:paddingHorizontal="30dp"
-                    android:paddingTop="10dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button_background"
                     android:text="Check Out"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="24sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
+                    android:padding="12dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

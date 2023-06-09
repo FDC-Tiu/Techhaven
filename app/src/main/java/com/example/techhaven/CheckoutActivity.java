@@ -1,26 +1,24 @@
 package com.example.techhaven;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.paypal.android.sdk.payments.PayPalAuthorization;
-import com.paypal.android.sdk.payments.PayPalPayment;
-import com.paypal.android.sdk.payments.PayPalService;
-import com.paypal.android.sdk.payments.PaymentActivity;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-import org.w3c.dom.Text;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class CheckoutActivity extends AppCompatActivity {
@@ -46,8 +44,8 @@ public class CheckoutActivity extends AppCompatActivity {
         }
         recyclerView = findViewById(R.id.recycler_checkout_view);
         payBtn = findViewById(R.id.pay_btn);
-        paymentAdapter = new PaymentAdapter(cartList, CheckoutActivity.this);
-        recyclerView.setAdapter(paymentAdapter);
+
+        initializeAdapter();
         paymentBackbtn = findViewById(R.id.payment_back_btn);
         overAllPrice = findViewById(R.id.overall_price_textview);
         paypalBtn = findViewById(R.id.pay_btn);
@@ -83,10 +81,54 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
     }
+    private void initializeAdapter() {
+        paymentAdapter = new PaymentAdapter(cartList, CheckoutActivity.this);
+        recyclerView.setAdapter(paymentAdapter);
+    }
+
+    private void getProductIdFromCart() {
+        ArrayList<CartCheckout> cartCheckoutList = new ArrayList<>();
+        cartCheckoutList = cartList;
+        ArrayList<String> mIdList = new ArrayList<>();
+        for (CartCheckout cart : cartCheckoutList) {
+            String mId = cart.getId();
+            mIdList.add(mId);
+        }
+
+        for (String mId : mIdList) {
+            deleteFunc(mId);
+        }
+    }
+    private void deleteFunc(String mId) {
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Cart").child(mId);
+
+        // Delete the value
+        databaseRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d("Tiuuu", "onComplete: " + mId);
+                    cartList = new ArrayList<>();
+                    initializeAdapter();
+
+                } else {
+                    Log.d("Tiuuu", "unsuccessful: ");
+                }
+            }
+        });
+    }
+
     private void redirectPayPal() {
         // Create an intent to start the PayPal activity
         Intent intent = new Intent(getApplicationContext(), PaypalActivity.class);
         intent.putExtra("total_price", total);
-        startActivity(intent);
+        mLauncher.launch(intent);
     }
+
+    ActivityResultLauncher<Intent> mLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Log.d("Tiuuu", "ressuuuult: ");
+            getProductIdFromCart();
+        }
+    });
 }
