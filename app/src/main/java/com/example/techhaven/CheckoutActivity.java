@@ -81,6 +81,23 @@ public class CheckoutActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        checkList();
+    }
+
+    private void checkList() {
+        if (cartList.size() == 0) {
+            payBtn.setVisibility(View.GONE);
+        }
+        else{
+            payBtn.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void initializeAdapter() {
         paymentAdapter = new PaymentAdapter(cartList, CheckoutActivity.this);
         recyclerView.setAdapter(paymentAdapter);
@@ -110,7 +127,8 @@ public class CheckoutActivity extends AppCompatActivity {
                     Log.d("Tiuuu", "onComplete: " + mId);
                     cartList = new ArrayList<>();
                     initializeAdapter();
-
+                    overAllPrice.setText("");
+                    checkList();
                 } else {
                     Log.d("Tiuuu", "unsuccessful: ");
                 }

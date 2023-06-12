@@ -45,9 +45,10 @@ public class CartFragment extends Fragment {
     private RecyclerView recyclerView;
     private CartCheckoutAdapter cartCheckoutAdapter;
     private TextView checkoutBtn;
-    private   ArrayList<CartCheckout> cartList;
+    private ArrayList<CartCheckout> cartList;
     private PaymentAdapter paymentAdapter;
     private SpinKitView spinKitView;
+    private TextView noData;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -60,6 +61,7 @@ public class CartFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recycler_product_list_view);
         checkoutBtn = root.findViewById(R.id.checkout_btn);
         spinKitView = root.findViewById(R.id.spin_kit);
+        noData = root.findViewById(R.id.no_data);
 
         fetchCart();
 
@@ -113,9 +115,12 @@ public class CartFragment extends Fragment {
                 if (cartList.isEmpty()) {
                     checkoutBtn.setEnabled(false);
                     checkoutBtn.setAlpha(0.5f);
+                    noData.setVisibility(View.VISIBLE);
+
                 } else {
                     checkoutBtn.setEnabled(true);
                     checkoutBtn.setAlpha(1.0f);
+                    noData.setVisibility(View.GONE);
                 }
 
                 Log.d("teeest", "onDataChange: " + new Gson().toJson(cartList));
